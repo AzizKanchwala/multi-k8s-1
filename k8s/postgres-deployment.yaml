@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+
+
+
+# Appreciate the need for volumes.
+# Do not just randomly increase the no. of replicas
+# to 2. (Recipe for disaster if underlying only 1 volume)
+
+#In Docker, volume is the mechanism for a container to access
+# files outside its file syste,
+# In Kubernetes, volume is a special type of object.
+# Belongs to the pod
+
+# PV belongs outside the pod
+# PVC is like a billboard of sorts with options
+# Options - Statically/Dynamically provisioned persistent volume

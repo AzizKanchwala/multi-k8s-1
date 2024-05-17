@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+
+# If we attach these instances with a POD,
+# Kubernetes must find an instance associated
+
+# ReadWriteOnce, ReadOnlyMany, ReadWriteMany
+# minikube-hostpath
+# storageClass options
